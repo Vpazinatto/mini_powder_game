@@ -1,0 +1,24 @@
+{
+  "name": "mini_powder_game",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vinicius Pazinatto <vinicius.pazinatto.g@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/p5": "^1.7.7",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4"
+  },
+  "dependencies": {
+    "p5": "^2.3.0"
+  }
+  ,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
