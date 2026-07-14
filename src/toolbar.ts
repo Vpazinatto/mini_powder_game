@@ -12,7 +12,10 @@ export class Toolbar {
 
   create() {
     for (const [id, element] of this.elementRegistry) {
-      this.createMaterialButton((element as any).constructor.name, id);
+      // Use a stable displayName set on each Element subclass so it
+      // doesn't break when class names are mangled during build/minify.
+      const label = (element as any).displayName ?? (element as any).constructor.name;
+      this.createMaterialButton(label, id);
     }
   }
 

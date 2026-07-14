@@ -5,11 +5,13 @@ export class Element {
   id: number;
   color: number[];
   direction: number;
+  displayName: string;
 
-  constructor(id: number, color: number[], direction: number) {
+  constructor(id: number, color: number[], direction: number, displayName = 'Element') {
     this.id = id;
     this.color = color;
     this.direction = direction;
+    this.displayName = displayName;
   }
 
   update(grid: Grid, x: number, y: number) {
