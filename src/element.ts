@@ -1,3 +1,4 @@
+/// <reference types="p5/global" />
 import type { Grid } from "./grid";
 
 export class Element {
