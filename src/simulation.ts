@@ -32,14 +32,14 @@ export class Simulation {
     this.grid.forEachDescending((x, y, id) => {
       if (this.fallingIds.has(id)) {
         const element = this.elements.get(id);
-        element?.update(this.grid, x, y);
+        element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
       }
     });
 
     this.grid.forEachAscending((x, y, id) => {
       if (this.risingIds.has(id)) {
         const element = this.elements.get(id);
-        element?.update(this.grid, x, y);
+        element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
       }
     });
   }
