@@ -1,7 +1,7 @@
 /// <reference types="p5/global" />
 import type { Grid } from "./grid";
 
-export class Element {
+export abstract class Element {
   constructor(
     public id: number,
     public color: number[],
@@ -73,7 +73,7 @@ export class Element {
     dir: number,
     getElementById: (id: number) => Element | undefined
   ) {
-    // Heavier solids should not flow sideways like liquids.
+    // Elementos com densidade maior que 2 não se espalham horizontalmente como líquidos.
     if (this.density > 2) {
       return;
     }

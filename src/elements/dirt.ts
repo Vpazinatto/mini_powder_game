@@ -16,6 +16,7 @@ export class Dirt extends Element {
     y: number,
     getElementById: (id: number) => Element | undefined
   ) {
+    // Verifica se há água em qualquer célula adjacente (incluindo diagonais) e transforma a célula de terra em lama se houver.
     const neighbors = [
       [x, y - 1],
       [x + 1, y],

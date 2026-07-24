@@ -2,6 +2,8 @@ import { Element } from '../element';
 import type { Grid } from '../grid';
 import { Water } from './water';
 
+const CONDENSATION_CHANCE = 0.00005;
+
 export class Steam extends Element {
   static readonly ID = 3;
 
@@ -16,7 +18,7 @@ export class Steam extends Element {
     getElementById: (id: number) => Element | undefined
   ) {
     const topBand = y < grid.rows * 0.2;
-    const shouldCondense = topBand ? random() < 0.005 : random() < 0.00005;
+    const shouldCondense = topBand ? random() < CONDENSATION_CHANCE * 4 : random() < CONDENSATION_CHANCE;
 
     if (shouldCondense) {
       grid.set(x, y, Water.ID);

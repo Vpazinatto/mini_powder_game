@@ -16,7 +16,7 @@ export class Grid {
   }
 
   canMove(x: number, y: number) {
-    if (x < 0 || y < 0 || x >= this.cols || y >= this.rows) {
+    if (!this.inBounds(x, y)) {
       return false;
     }
 
@@ -24,7 +24,7 @@ export class Grid {
   }
 
   swap(x1: number, y1: number, x2: number, y2: number) {
-    [this.grid[x2][y2], this.grid[x1][y1]] = [this.grid[x1][y1], this.grid[x2][y2]];
+    [this.grid[x2][y2], this.grid[x1][y1]] = [this.get(x1, y1), this.get(x2, y2)];
   }
 
   set(x: number, y: number, value: number) {

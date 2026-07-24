@@ -14,7 +14,6 @@ export class Water extends Element {
     grid: Grid,
     x: number,
     y: number,
-    _getElementById: (id: number) => Element | undefined
   ) {
     const neighbors = [
       [x, y - 1],
@@ -51,21 +50,43 @@ export class Water extends Element {
       return;
     }
 
-    // Allow short-range lateral flow through same-water cells to level puddles.
+    const canFlowThroughWater = (flowDir: number, distance: number) => {
+      for (let step = 1; step < distance; step++) {
+        const ix = x + flowDir * step;
+
+        if (!grid.inBounds(ix, y) || grid.get(ix, y) !== Water.ID) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    const maxFlowDistance = 8;
+
+    // Prefer finding a nearby edge where this water can immediately fall.
     for (const flowDir of [dir, -dir]) {
-      for (let distance = 2; distance <= 3; distance++) {
-        let canFlow = true;
-
-        for (let step = 1; step < distance; step++) {
-          const ix = x + flowDir * step;
-
-          if (!grid.inBounds(ix, y) || grid.get(ix, y) !== Water.ID) {
-            canFlow = false;
-            break;
-          }
+      for (let distance = 2; distance <= maxFlowDistance; distance++) {
+        if (!canFlowThroughWater(flowDir, distance)) {
+          continue;
         }
 
-        if (!canFlow) {
+        const targetX = x + flowDir * distance;
+
+        if (
+          this.canDisplace(grid, targetX, y, getElementById)
+          && this.canDisplace(grid, targetX, y + 1, getElementById)
+        ) {
+          grid.swap(x, y, targetX, y);
+          return;
+        }
+      }
+    }
+
+    // Then perform broader lateral equalization through connected water.
+    for (const flowDir of [dir, -dir]) {
+      for (let distance = maxFlowDistance; distance >= 2; distance--) {
+        if (!canFlowThroughWater(flowDir, distance)) {
           continue;
         }
 

@@ -16,7 +16,7 @@ export class Fire extends Element {
     y: number,
     getElementById: (id: number) => Element | undefined
   ) {
-    // Fire has a short lifetime to avoid permanent blobs.
+    // Fogo tem uma chance de se apagar a cada atualização.
     if (random() < 0.03) {
       grid.set(x, y, 0);
       return;
@@ -29,7 +29,6 @@ export class Fire extends Element {
     grid: Grid,
     x: number,
     y: number,
-    _getElementById: (id: number) => Element | undefined
   ) {
     const neighbors = [
       [x, y - 1],
@@ -51,7 +50,7 @@ export class Fire extends Element {
       }
     }
 
-    // Water usually extinguishes fire after the reaction.
+    // Água em contato com o fogo tem uma chance de evaporar, transformando-se em vapor.
     if (touchedWater && random() < 0.7) {
       grid.set(x, y, 0);
     }

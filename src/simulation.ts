@@ -29,22 +29,26 @@ export class Simulation {
   }
 
   update() {
+    // Atualiza primeiro as partículas que caem (de baixo para cima) e depois
+    // as que sobem (de cima para baixo), evitando sobreposições indesejadas.
     this.grid.forEachDescending((x, y, id) => {
-      if (this.fallingIds.has(id)) {
-        const element = this.elements.get(id);
-        element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
-      }
+      if (!this.fallingIds.has(id)) return;
+
+      const element = this.elements.get(id);
+      element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
     });
 
     this.grid.forEachAscending((x, y, id) => {
-      if (this.risingIds.has(id)) {
-        const element = this.elements.get(id);
-        element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
-      }
+      if (!this.risingIds.has(id)) return;
+
+      const element = this.elements.get(id);
+      element?.update(this.grid, x, y, targetId => this.elements.get(targetId));
     });
   }
 
   draw() {
+    // Renderiza somente após movimentos/reacoes terminarem neste frame,
+    // para exibir um estado consistente do mundo em cada frame.
     for (let x = 0; x < this.grid.cols; x++) {
       for (let y = 0; y < this.grid.rows; y++) {
         const id = this.grid.get(x, y);
@@ -53,7 +57,9 @@ export class Simulation {
 
         const element = this.elements.get(id);
 
-        fill((element as any).color);
+        if (!element) continue;
+
+        fill(element.color);
         rect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
       }
     }
