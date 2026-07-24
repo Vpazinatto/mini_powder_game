@@ -18,6 +18,7 @@ export class Steam extends Element {
     getElementById: (id: number) => Element | undefined
   ) {
     const topBand = y < grid.rows * 0.2;
+    // Vapor tem mais chance de se condensar em água quando está na parte superior da tela.
     const shouldCondense = topBand ? random() < CONDENSATION_CHANCE * 4 : random() < CONDENSATION_CHANCE;
 
     if (shouldCondense) {
