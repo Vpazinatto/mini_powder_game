@@ -47,8 +47,7 @@ export class Simulation {
   }
 
   draw() {
-    // Renderiza somente após movimentos/reacoes terminarem neste frame,
-    // para exibir um estado consistente do mundo em cada frame.
+    // Renderiza o grid, desenhando cada célula com a cor do elemento correspondente.
     for (let x = 0; x < this.grid.cols; x++) {
       for (let y = 0; y < this.grid.rows; y++) {
         const id = this.grid.get(x, y);
