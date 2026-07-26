@@ -1,20 +1,20 @@
-/// <reference types="p5/global" />
-import type { Grid } from "./grid";
+import type { Grid, XCoord, YCoord } from './grid';
+import { ElementId, elementNameFromId } from './element-id';
 
 export abstract class Element {
   constructor(
-    public id: number,
+    public id: ElementId,
     public color: number[],
     public direction: number,
     public density: number,
-    public displayName = "Element"
+    public displayName = elementNameFromId(id)
   ) {}
 
   canDisplace(
     grid: Grid,
-    x: number,
-    y: number,
-    getElementById: (id: number) => Element | undefined
+    x: XCoord,
+    y: YCoord,
+    getElementById: (id: ElementId) => Element | undefined
   ) {
     if (!grid.inBounds(x, y)) {
       return false;
@@ -22,7 +22,7 @@ export abstract class Element {
 
     const targetId = grid.get(x, y);
 
-    if (targetId === 0) {
+    if (targetId === ElementId.Empty) {
       return true;
     }
 
@@ -33,33 +33,33 @@ export abstract class Element {
 
   interact(
     _grid: Grid,
-    _x: number,
-    _y: number,
-    _getElementById: (id: number) => Element | undefined
+    _x: XCoord,
+    _y: YCoord,
+    _getElementById: (id: ElementId) => Element | undefined
   ) {}
 
   update(
     grid: Grid,
-    x: number,
-    y: number,
-    getElementById: (id: number) => Element | undefined
+    x: XCoord,
+    y: YCoord,
+    getElementById: (id: ElementId) => Element | undefined
   ) {
     this.interact(grid, x, y, getElementById);
 
     if (this.canDisplace(grid, x, y + this.direction, getElementById)) {
-      grid.swap(x, y, x, y + this.direction);
+      grid.swap({ x, y }, { x, y: y + this.direction });
       return;
     }
 
     const dir = random() < 0.5 ? -1 : 1;
 
     if (this.canDisplace(grid, x + dir, y + this.direction, getElementById)) {
-      grid.swap(x, y, x + dir, y + this.direction);
+      grid.swap({ x, y }, { x: x + dir, y: y + this.direction });
       return;
     }
 
     if (this.canDisplace(grid, x - dir, y + this.direction, getElementById)) {
-      grid.swap(x, y, x - dir, y + this.direction);
+      grid.swap({ x, y }, { x: x - dir, y: y + this.direction });
       return;
     }
 
@@ -68,10 +68,10 @@ export abstract class Element {
 
   spread(
     grid: Grid,
-    x: number,
-    y: number,
+    x: XCoord,
+    y: YCoord,
     dir: number,
-    getElementById: (id: number) => Element | undefined
+    getElementById: (id: ElementId) => Element | undefined
   ) {
     // Elementos com densidade maior que 2 não se espalham horizontalmente como líquidos.
     if (this.density > 2) {
@@ -79,16 +79,16 @@ export abstract class Element {
     }
 
     if (this.canDisplace(grid, x + dir, y, getElementById)) {
-      grid.swap(x, y, x + dir, y);
+      grid.swap({ x, y }, { x: x + dir, y });
       return;
     }
 
     if (this.canDisplace(grid, x - dir, y, getElementById)) {
-      grid.swap(x, y, x - dir, y);
+      grid.swap({ x, y }, { x: x - dir, y });
     }
   }
 
-  draw(grid: Grid, x: number, y: number, cellSize: number) {
+  draw(grid: Grid, x: XCoord, y: YCoord, cellSize: number) {
     fill(this.color as any);
     rect(x * cellSize, y * cellSize, cellSize, cellSize);
   }

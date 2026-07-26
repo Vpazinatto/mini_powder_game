@@ -1,12 +1,49 @@
 import { Element } from '../element';
 import { ElementId } from '../element-id';
 import type { Grid, XCoord, YCoord } from '../grid';
+import { Bedrock } from './bedrock';
+import { Steam } from './steam';
+import { Water } from './water';
 
-export class Water extends Element {
-  static readonly ID = ElementId.Water;
+export class Lava extends Element {
+  static readonly ID = ElementId.Lava;
 
   constructor() {
-    super(Water.ID, [50, 150, 255], 1, 2);
+    super(Lava.ID, [240, 90, 20], 1, 2.2);
+  }
+
+  update(
+    grid: Grid,
+    x: XCoord,
+    y: YCoord,
+    getElementById: (id: ElementId) => Element | undefined
+  ) {
+    const neighbors = [
+      [x, y - 1],
+      [x + 1, y],
+      [x, y + 1],
+      [x - 1, y],
+    ];
+
+    let touchedWater = false;
+
+    for (const [nx, ny] of neighbors) {
+      if (!grid.inBounds(nx, ny)) {
+        continue;
+      }
+
+      if (grid.get(nx, ny) === Water.ID) {
+        grid.set(nx, ny, Steam.ID);
+        touchedWater = true;
+      }
+    }
+
+    if (touchedWater) {
+      grid.set(x, y, Bedrock.ID);
+      return;
+    }
+
+    super.update(grid, x, y, getElementById);
   }
 
   spread(
@@ -16,7 +53,6 @@ export class Water extends Element {
     dir: number,
     getElementById: (id: ElementId) => Element | undefined
   ) {
-    // Primeiro tenta espalhar para os lados como liquido comum.
     if (this.canDisplace(grid, x + dir, y, getElementById)) {
       grid.swap({ x, y }, { x: x + dir, y });
       return;
@@ -27,8 +63,6 @@ export class Water extends Element {
       return;
     }
 
-    // Se estiver bloqueada, tenta um salto curto por cima de agua conectada
-    // para ajudar a nivelar pequenas ondulacoes.
     for (const flowDir of [dir, -dir]) {
       const bridgeX = x + flowDir;
       const targetX = x + flowDir * 2;
@@ -37,7 +71,7 @@ export class Water extends Element {
         continue;
       }
 
-      if (grid.get(bridgeX, y) !== Water.ID) {
+      if (grid.get(bridgeX, y) !== Lava.ID) {
         continue;
       }
 

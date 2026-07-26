@@ -1,8 +1,18 @@
+import { ElementId } from './element-id';
+
+export type XCoord = number;
+export type YCoord = number;
+
+export type Position = {
+  x: XCoord;
+  y: YCoord;
+};
+
 export class Grid {
   cellSize: number;
   cols: number;
   rows: number;
-  grid: number[][];
+  grid: ElementId[][];
 
   constructor(width: number, height: number, cellSize: number) {
     this.cellSize = cellSize;
@@ -12,34 +22,37 @@ export class Grid {
 
     this.grid = Array(this.cols)
       .fill(undefined)
-      .map(() => Array(this.rows).fill(0));
+      .map(() => Array(this.rows).fill(ElementId.Empty));
   }
 
-  canMove(x: number, y: number) {
+  canMove(x: XCoord, y: YCoord) {
     if (!this.inBounds(x, y)) {
       return false;
     }
 
-    return this.grid[x][y] === 0;
+    return this.grid[x][y] === ElementId.Empty;
   }
 
-  swap(x1: number, y1: number, x2: number, y2: number) {
-    [this.grid[x2][y2], this.grid[x1][y1]] = [this.get(x1, y1), this.get(x2, y2)];
+  swap(first: Position, second: Position) {
+    [this.grid[second.x][second.y], this.grid[first.x][first.y]] = [
+      this.get(first.x, first.y),
+      this.get(second.x, second.y),
+    ];
   }
 
-  set(x: number, y: number, value: number) {
+  set(x: XCoord, y: YCoord, value: ElementId) {
     this.grid[x][y] = value;
   }
 
-  get(x: number, y: number) {
+  get(x: XCoord, y: YCoord): ElementId {
     return this.grid[x][y];
   }
 
-  inBounds(x: number, y: number) {
+  inBounds(x: XCoord, y: YCoord) {
     return x >= 0 && y >= 0 && x < this.cols && y < this.rows;
   }
 
-  forEachDescending(callback: (x: number, y: number, value: number) => void) {
+  forEachDescending(callback: (x: XCoord, y: YCoord, value: ElementId) => void) {
     for (let y = this.rows - 1; y >= 0; y--) {
       for (let x = 0; x < this.cols; x++) {
         callback(x, y, this.grid[x][y]);
@@ -47,7 +60,7 @@ export class Grid {
     }
   }
 
-  forEachAscending(callback: (x: number, y: number, value: number) => void) {
+  forEachAscending(callback: (x: XCoord, y: YCoord, value: ElementId) => void) {
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         callback(x, y, this.grid[x][y]);

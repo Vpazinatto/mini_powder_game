@@ -1,13 +1,15 @@
 import { Grid } from './grid';
 import type { Element } from './element';
+import { ElementId } from './element-id';
+import type { XCoord, YCoord } from './grid';
 
 export class Simulation {
   grid: Grid;
   cellSize: number;
 
-  elements: Map<number, Element>;
-  fallingIds: Set<number>;
-  risingIds: Set<number>;
+  elements: Map<ElementId, Element>;
+  fallingIds: Set<ElementId>;
+  risingIds: Set<ElementId>;
 
   constructor(width: number, height: number, cellSize: number) {
     this.grid = new Grid(width, height, cellSize);
@@ -52,7 +54,7 @@ export class Simulation {
       for (let y = 0; y < this.grid.rows; y++) {
         const id = this.grid.get(x, y);
 
-        if (id === 0) continue;
+        if (id === ElementId.Empty) continue;
 
         const element = this.elements.get(id);
 
@@ -64,14 +66,14 @@ export class Simulation {
     }
   }
 
-  paint(mouseX: number, mouseY: number, elementId: number, brushSize = 2) {
-    const gx = Math.floor(mouseX / this.cellSize);
-    const gy = Math.floor(mouseY / this.cellSize);
+  paint(mouseX: number, mouseY: number, elementId: ElementId, brushSize = 2) {
+    const gx = Math.floor(mouseX / this.cellSize) as XCoord;
+    const gy = Math.floor(mouseY / this.cellSize) as YCoord;
 
     for (let dx = -brushSize; dx <= brushSize; dx++) {
       for (let dy = -brushSize; dy <= brushSize; dy++) {
-        const x = gx + dx;
-        const y = gy + dy;
+        const x = (gx + dx) as XCoord;
+        const y = (gy + dy) as YCoord;
 
         if (this.grid.inBounds(x, y)) {
           this.grid.set(x, y, elementId);

@@ -1,9 +1,10 @@
 import { Element } from '../element';
+import { ElementId } from '../element-id';
 
 export class Mud extends Element {
-  static readonly ID = 5;
+  static readonly ID = ElementId.Mud;
 
   constructor() {
-    super(Mud.ID, [95, 74, 48], 1, 2.6, 'Mud');
+    super(Mud.ID, [95, 74, 48], 1, 2.6);
   }
 }

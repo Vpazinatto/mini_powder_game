@@ -1,20 +1,21 @@
 import { Element } from '../element';
-import type { Grid } from '../grid';
+import { ElementId } from '../element-id';
+import type { Grid, XCoord, YCoord } from '../grid';
 import { Mud } from './mud';
 import { Water } from './water';
 
 export class Dirt extends Element {
-  static readonly ID = 1;
+  static readonly ID = ElementId.Dirt;
 
   constructor() {
-    super(Dirt.ID, [130, 90, 40], 1, 3, 'Dirt');
+    super(Dirt.ID, [130, 90, 40], 1, 3);
   }
 
   update(
     grid: Grid,
-    x: number,
-    y: number,
-    getElementById: (id: number) => Element | undefined
+    x: XCoord,
+    y: YCoord,
+    getElementById: (id: ElementId) => Element | undefined
   ) {
     // Verifica se há água em qualquer célula adjacente (incluindo diagonais) e transforma a célula de terra em lama se houver.
     const neighbors = [

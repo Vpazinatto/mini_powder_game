@@ -1,25 +1,22 @@
-/// <reference types="p5/global" />
 import type { Element } from './element';
+import { ElementId } from './element-id';
 
 export class Toolbar {
-  elementRegistry: Map<number, Element>;
-  currentId: number;
+  elementRegistry: Map<ElementId, Element>;
+  currentId: ElementId;
 
-  constructor(elementRegistry: Map<number, Element>) {
+  constructor(elementRegistry: Map<ElementId, Element>) {
     this.elementRegistry = elementRegistry;
-    this.currentId = 1;
+    this.currentId = ElementId.Dirt;
   }
 
   create() {
     for (const [id, element] of this.elementRegistry) {
-      // Use a stable displayName set on each Element subclass so it
-      // doesn't break when class names are mangled during build/minify.
-      const label = (element as any).displayName ?? (element as any).constructor.name;
-      this.createMaterialButton(label, id);
+      this.createMaterialButton(element.displayName, id);
     }
   }
 
-  createMaterialButton(name: string, id: number) {
+  createMaterialButton(name: string, id: ElementId) {
     const btn = createButton(name);
 
     btn.parent('toolbar');

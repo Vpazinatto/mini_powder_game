@@ -1,24 +1,25 @@
 import { Element } from '../element';
-import type { Grid } from '../grid';
+import { ElementId } from '../element-id';
+import type { Grid, XCoord, YCoord } from '../grid';
 import { Steam } from './steam';
 import { Water } from './water';
 
 export class Fire extends Element {
-  static readonly ID = 4;
+  static readonly ID = ElementId.Fire;
 
   constructor() {
-    super(Fire.ID, [255, 110, 30], -1, 0, 'Fire');
+    super(Fire.ID, [255, 110, 30], -1, 0);
   }
 
   update(
     grid: Grid,
-    x: number,
-    y: number,
-    getElementById: (id: number) => Element | undefined
+    x: XCoord,
+    y: YCoord,
+    getElementById: (id: ElementId) => Element | undefined
   ) {
     // Fogo tem uma chance de se apagar a cada atualização.
     if (random() < 0.03) {
-      grid.set(x, y, 0);
+      grid.set(x, y, ElementId.Empty);
       return;
     }
 
@@ -27,8 +28,8 @@ export class Fire extends Element {
 
   interact(
     grid: Grid,
-    x: number,
-    y: number,
+    x: XCoord,
+    y: YCoord,
   ) {
     const neighbors = [
       [x, y - 1],
@@ -52,7 +53,7 @@ export class Fire extends Element {
 
     // Água em contato com o fogo tem uma chance de evaporar, transformando-se em vapor.
     if (touchedWater && random() < 0.7) {
-      grid.set(x, y, 0);
+      grid.set(x, y, ElementId.Empty);
     }
   }
 }

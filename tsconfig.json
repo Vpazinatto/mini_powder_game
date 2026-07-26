@@ -3,6 +3,7 @@
     "target": "ES2019",
     "module": "ESNext",
     "moduleResolution": "node",
+    "types": ["p5", "p5/global"],
     "ignoreDeprecations": "6.0",
     "strict": true,
     "esModuleInterop": true,
